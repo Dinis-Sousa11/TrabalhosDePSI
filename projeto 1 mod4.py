@@ -38,4 +38,5 @@ lista_senha = list(senha)
 random.shuffle(lista_senha)
 senha = "".join(lista_senha)
 
+
 print("Senha gerada:", senha)
