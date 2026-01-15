@@ -22,7 +22,7 @@ elif opcao == "2":
     for palavra in palavras:
         senha += palavra[0].upper()
     senha += str(random.randint(0, 999))
-    senha += random.choice("!@#$%&*")
+    senha += random.choice("!@#$%&§*")
 
 #palavra+numeros
 elif opcao == "3":
@@ -37,6 +37,5 @@ else:
 lista_senha = list(senha)
 random.shuffle(lista_senha)
 senha = "".join(lista_senha)
-
 
 print("Senha gerada:", senha)
