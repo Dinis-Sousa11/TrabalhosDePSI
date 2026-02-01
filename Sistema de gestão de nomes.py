@@ -1,141 +1,140 @@
-# Importamos o Tkinter, que é a biblioteca gráfica do Python
-# É como o motor gráfico do Minecraft
+# Importa a biblioteca Tkinter para criar interfaces gráficas
 import tkinter as tk
 
-# messagebox serve para criar pop-ups (avisos, erros, confirmações)
-# Tipo mensagens do servidor SMP
+# Importa caixas de mensagem e widgets estilizados (ttk)
 from tkinter import messagebox, ttk
 
 
-# - Dados -
-
-# Lista onde vamos guardar os nomes
-#baú
+# lista para onde vão os nomes
 nomes = []
 
 
-#- Funçoes -
+# funçoes
 
-# Função para adicionar um nome
-# É chamada quando clicamos no botão "Adicionar"
+# Adiciona um nome à lista
 def adicionar_nome():
+    nome = entrada_nome.get().strip()  # Lê o texto da caixa e remove espaços extras
 
-    # Lê o texto que o utilizador escreveu na caixa
-    nome = entrada_nome.get().strip()
-    # strip() remove espaços no início e no fim (anti-troll)
-
-    # Se o nome não estiver vazio
     if nome:
-        # Adiciona o nome à lista (baú)
-        nomes.append(nome)
-
-        # Atualiza a lista visual na interface
-        atualizar_lista()
-
-        # Limpa a caixa de texto
-        entrada_nome.delete(0, tk.END)
-
-        # Mostra uma mensagem de sucesso
+        nomes.append(nome)             # Adiciona à lista
+        atualizar_lista()              # Atualiza a lista visual
+        entrada_nome.delete(0, tk.END) # Limpa a caixa de texto
         messagebox.showinfo("Sucesso", "Nome adicionado!")
     else:
-        # Caso o utilizador não tenha escrito nada
         messagebox.showwarning("Aviso", "Digite um nome válido.")
 
 
-# Função para remover um nome
+# Função responsável por remover um nome da lista
 def remover_nome():
-    try:
-        # Pega no índice do nome selecionado na lista
-        selecionado = lista_nomes.curselection()[0]
 
-        # Remove o nome da lista usando o índice
-        nomes.pop(selecionado)
+    # Obtém os índices dos itens selecionados na Listbox
+    # O resultado é uma tupla, por exemplo: (0,) ou (2,)
+    selecionado = lista_nomes.curselection()
 
-        # Atualiza a interface
+    # se houver algo
+    if selecionado:
+
+        # Guarda o índice do primeiro item selecionado
+        indice = selecionado[0]
+
+        # Remove da lista 'nomes' o elemento que está nessa posição
+        nomes.pop(indice)
+
+        # Atualiza a lista visual para refletir a remoção
         atualizar_lista()
-    except:
-        # Se não houver nada selecionado
-        messagebox.showwarning("Aviso", "Selecione um nome para remover.")
 
+    else:
+        # Executado quando nenhum nome foi selecionado
+        messagebox.showwarning(
+            "Aviso",
+            "Selecione um nome para remover."
+        )
 
-# Função para procurar um nome
+# Procura um nome na lista
 def procurar_nome():
-    # Lê o nome escrito
     nome = entrada_nome.get().strip()
 
-    # Verifica se o nome existe na lista
     if nome in nomes:
         messagebox.showinfo("Encontrado", f"O nome '{nome}' está na lista.")
     else:
         messagebox.showerror("Erro", f"O nome '{nome}' não foi encontrado.")
 
 
-# Função para editar um nome existente
+# Função responsável por editar o nome selecionado na lista
 def editar_nome():
-    try:
-        # Índice do nome selecionado
-        selecionado = lista_nomes.curselection()[0]
 
-        # Novo nome escrito na caixa
+    # obtém os índices dos itens selecionados na Listbox
+    # o resultado é uma tupla
+    selecionado = lista_nomes.curselection()
+
+    # Verifica se existe algum item selecionado
+    if selecionado:
+
+        # Guarda o índice do item selecionado
+        indice = selecionado[0]
+
+        # Lê o novo nome escrito na caixa de texto
+        # strip() remove espaços no início e no fim
         novo_nome = entrada_nome.get().strip()
 
+        # Verifica se o novo nome não está vazio
         if novo_nome:
-            # Substitui o nome antigo pelo novo
-            nomes[selecionado] = novo_nome
 
-            # Atualiza a interface
+            # Substitui o nome antigo pelo novo nome
+            nomes[indice] = novo_nome
+
+            # Atualiza a lista visual para mostrar a alteração
             atualizar_lista()
+
         else:
-            messagebox.showwarning("Aviso", "Digite o novo nome.")
-    except:
-        messagebox.showwarning("Aviso", "Selecione um nome para editar.")
+            # Caso a caixa de texto esteja vazia
+            messagebox.showwarning(
+                "Aviso",
+                "Digite o novo nome."
+            )
+    else:
+        # Executado quando nenhum nome está selecionado
+        messagebox.showwarning(
+            "Aviso",
+            "Selecione um nome para editar."
+        )
 
 
-# Função para ordenar os nomes de A a Z
+# Ordena os nomes alfabeticamente
 def ordenar_nomes():
-    # sort() organiza a lista alfabeticamente
     nomes.sort()
     atualizar_lista()
 
 
-# Função para limpar todos os nomes
+# Limpa todos os nomes da lista
 def limpar_lista():
-    # Pergunta ao utilizador se tem a certeza
     if messagebox.askyesno("Confirmação", "Deseja apagar todos os nomes?"):
-        # clear() apaga tudo da lista
         nomes.clear()
         atualizar_lista()
 
 
-# Função que atualiza a lista visual
+# Atualiza a lista visual
 def atualizar_lista():
-    # Limpa a lista gráfica
     lista_nomes.delete(0, tk.END)
-
-    # Volta a inserir todos os nomes
     for nome in nomes:
         lista_nomes.insert(tk.END, nome)
 
 
-# - main janela -
+# main janela
 
 # Cria a janela principal
-# É o "mundo" do Minecraft
 janela = tk.Tk()
 janela.title("Gestor de Nomes")
 janela.geometry("450x520")
-janela.configure(bg="#1e1e1e")  # Tema escuro
+janela.configure(bg="#1e1e1e")
 janela.resizable(False, False)
 
 
-#- personalizaçao -
+# coisas para ficar bonito 
 
-# ttk.Style permite personalizar o visual dos componentes
-# tipo resource pack
 style = ttk.Style(janela)
 style.theme_use("clam")
 
-# Estilo dos botões
 style.configure(
     "Dark.TButton",
     font=("Segoe UI", 11),
@@ -145,13 +144,11 @@ style.configure(
     borderwidth=0
 )
 
-# Efeito quando o rato passa por cima
 style.map(
     "Dark.TButton",
     background=[("active", "#3a3a3a")]
 )
 
-# Estilo da caixa de texto
 style.configure(
     "Dark.TEntry",
     fieldbackground="#2b2b2b",
@@ -161,19 +158,19 @@ style.configure(
 )
 
 
-#interface
+# ---------------- INTERFACE ----------------
 
-#titulo da aplicaçao
+# Título da aplicação
 titulo = tk.Label(
     janela,
-    text=" Gestor de Nomes",
+    text="Gestor de Nomes",
     bg="#1e1e1e",
     fg="white",
     font=("Segoe UI", 20, "bold")
 )
 titulo.pack(pady=15)
 
-#caixa de texto para escrever nomes
+# Caixa de texto para inserir nomes
 entrada_nome = ttk.Entry(
     janela,
     style="Dark.TEntry",
@@ -182,11 +179,11 @@ entrada_nome = ttk.Entry(
 )
 entrada_nome.pack(pady=10)
 
-# Frame para organizar os botões
+# Frame para os botões
 frame_botoes = tk.Frame(janela, bg="#1e1e1e")
 frame_botoes.pack(pady=10)
 
-# Lista de botões com texto e função associada
+# Lista de botões
 botoes = [
     ("Adicionar", adicionar_nome),
     ("Remover", remover_nome),
@@ -196,7 +193,7 @@ botoes = [
     ("Limpar Tudo", limpar_lista)
 ]
 
-# Criação dos botões em grelha
+# Cria os botões em formato de grelha
 for i, (texto, comando) in enumerate(botoes):
     ttk.Button(
         frame_botoes,
@@ -206,7 +203,7 @@ for i, (texto, comando) in enumerate(botoes):
         width=18
     ).grid(row=i//2, column=i%2, padx=8, pady=8)
 
-# Lista visual onde aparecem os nomes
+# Lista onde os nomes aparecem
 lista_nomes = tk.Listbox(
     janela,
     font=("Segoe UI", 12),
@@ -228,6 +225,11 @@ rodape = tk.Label(
 )
 rodape.pack(pady=5)
 
+# Mantém a aplicação em execução
+janela.mainloop()
+rodape.pack(pady=5)
+
 # Mantém o programa a correr
 # Sem isto, a janela fecha logo
+
 janela.mainloop()
